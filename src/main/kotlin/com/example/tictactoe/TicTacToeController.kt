@@ -3,7 +3,7 @@ package com.example.tictactoe
 import javafx.fxml.FXML
 import javafx.scene.control.Label
 
-class HelloController {
+class TicTacToeController {
     @FXML
     private lateinit var welcomeText: Label
 
