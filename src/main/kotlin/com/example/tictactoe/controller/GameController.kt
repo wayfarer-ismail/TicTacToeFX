@@ -31,9 +31,31 @@ class GameController(private val boardModel: BoardModel, private val gameView: G
             updateUI(row, col)
             val winner = boardModel.checkWin()
             if (winner != Player.NONE) {
-                // Handle game over (e.g., show winner, disable cells)
+                handleGameOver(winner)
             } else if (boardModel.isBoardFull()) {
-                // Handle draw (e.g., show draw message, disable cells)
+                handleDraw()
+            }
+        }
+    }
+
+    private fun handleGameOver(winner: Player) {
+        // Disable further moves and show win message
+        disableCells()
+
+        println("Player ${winner.symbol} wins!")
+    }
+
+    private fun handleDraw() {
+        // Disable further moves and show draw message
+        disableCells()
+
+        println("It's a draw!")
+    }
+
+    private fun disableCells() {
+        for (row in 0 until boardModel.boardSize) {
+            for (col in 0 until boardModel.boardSize) {
+                gameView.getCell(row, col).isDisable = true
             }
         }
     }

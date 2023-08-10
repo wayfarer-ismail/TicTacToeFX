@@ -18,7 +18,28 @@ class BoardModel(val boardSize: Int = 3) {
     }
 
     fun checkWin(): Player {
-        // Implement win checking logic here
+        // Check rows
+        for (row in 0 until boardSize) {
+            if (board[row][0] != Player.NONE && board[row][0] == board[row][1] && board[row][1] == board[row][2]) {
+                return board[row][0]
+            }
+        }
+
+        // Check columns
+        for (col in 0 until boardSize) {
+            if (board[0][col] != Player.NONE && board[0][col] == board[1][col] && board[1][col] == board[2][col]) {
+                return board[0][col]
+            }
+        }
+
+        // Check diagonals
+        if (board[0][0] != Player.NONE && board[0][0] == board[1][1] && board[1][1] == board[2][2]) {
+            return board[0][0]
+        }
+        if (board[0][2] != Player.NONE && board[0][2] == board[1][1] && board[1][1] == board[2][0]) {
+            return board[0][2]
+        }
+
         return Player.NONE
     }
 
