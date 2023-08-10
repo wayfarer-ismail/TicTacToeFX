@@ -1,6 +1,6 @@
 package com.example.tictactoe.model
 
-class BoardModel(private val boardSize: Int = 3) {
+class BoardModel(val boardSize: Int = 3) {
     private val board = Array(boardSize) { Array(boardSize) { Player.NONE } }
     private var currentPlayer = Player.X
 

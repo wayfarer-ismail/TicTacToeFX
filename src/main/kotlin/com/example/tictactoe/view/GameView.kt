@@ -1,6 +1,7 @@
 package com.example.tictactoe.view
 
 import javafx.geometry.Pos
+import javafx.scene.control.Label
 import javafx.scene.layout.GridPane
 import javafx.scene.layout.StackPane
 import javafx.scene.paint.Color
@@ -35,6 +36,7 @@ class GameView {
         cellBackground.fill = Color.WHITE
         cellBackground.stroke = Color.BLACK
 
+        val label = Label("-")
         val text = Text()
         text.font = Font.font(36.0)
         text.fill = Color.BLACK
@@ -42,11 +44,15 @@ class GameView {
         val cell = StackPane()
         cell.prefWidth = cellSize
         cell.prefHeight = cellSize
-        cell.children.addAll(cellBackground, text)
+        cell.children.addAll(cellBackground, text, label)
 
         // Add event handling for user interaction (e.g., mouse click) here
 
         return cell
+    }
+
+    fun getCell(row: Int, col: Int): StackPane {
+        return root.children[row * 3 + col] as StackPane
     }
 
     // Add methods to update the UI based on the board state here

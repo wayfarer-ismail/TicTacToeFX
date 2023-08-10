@@ -1,5 +1,7 @@
 package com.example.tictactoe.model
 
-enum class Player {
-    X, O, NONE
+enum class Player(val symbol: String) {
+    X("X"),
+    O("O"),
+    NONE(" ");
 }
