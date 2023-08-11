@@ -18,8 +18,8 @@ ext {
     junitVersion = '5.9.1'
 }
 
-sourceCompatibility = '18'
-targetCompatibility = '18'
+sourceCompatibility = '17'
+targetCompatibility = '17'
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
@@ -27,7 +27,7 @@ tasks.withType(JavaCompile) {
 
 application {
     mainModule = 'com.example.tictactoe'
-    mainClass = 'com.example.tictactoe.HelloApplication'
+    mainClass = 'com.example.tictactoe.TicTacToeApplication'
 }
 
 [compileKotlin, compileTestKotlin].forEach {
@@ -63,4 +63,15 @@ jlink {
 
 jlinkZip {
     group = 'distribution'
+}
+
+jar {
+    archivesBaseName = 'TicTacToe'
+    duplicatesStrategy = 'include' // or 'exclude' or 'fail'
+    manifest {
+        attributes 'Main-Class': 'com.example.tictactoe.TicTacToeApplication'
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
