@@ -21,7 +21,7 @@ ext {
 sourceCompatibility = '17'
 targetCompatibility = '17'
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
@@ -67,7 +67,7 @@ jlinkZip {
 
 jar {
     archivesBaseName = 'TicTacToe'
-    duplicatesStrategy = 'include' // or 'exclude' or 'fail'
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE // or 'exclude' or 'fail'
     manifest {
         attributes 'Main-Class': 'com.example.tictactoe.TicTacToeApplication'
     }

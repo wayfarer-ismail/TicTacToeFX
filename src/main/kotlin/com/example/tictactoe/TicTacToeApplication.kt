@@ -18,8 +18,11 @@ class TicTacToeApplication : Application() {
         primaryStage.scene = scene
         primaryStage.show()
     }
-}
 
-fun main() {
-    Application.launch(TicTacToeApplication::class.java)
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            launch(TicTacToeApplication::class.java)
+        }
+    }
 }
