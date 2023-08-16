@@ -1,6 +1,7 @@
 package com.example.tictactoe.view
 
 import javafx.geometry.Pos
+import javafx.scene.Node
 import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.layout.GridPane
@@ -66,6 +67,18 @@ class GameView {
         root.children.clear()
         root.children.add(farewellText)
     }
+
+    fun updateUI(row: Int, col: Int, currentPlayer: String) {
+        val cell = getCell(row, col)
+        cell.children.stream()
+            .filter { node: Node? -> node is Label }
+            .map { node: Node -> node as Label }
+            .findFirst()
+            .ifPresent { label: Label ->
+                label.text = currentPlayer
+            }
+    }
+
 
     // Add methods to update the UI based on the board state here
 }

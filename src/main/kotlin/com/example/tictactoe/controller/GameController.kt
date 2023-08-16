@@ -1,13 +1,15 @@
 package com.example.tictactoe.controller
 
+import com.example.tictactoe.bot.SimpleBot
 import com.example.tictactoe.model.BoardModel
 import com.example.tictactoe.model.Player
 import com.example.tictactoe.view.GameView
-import javafx.scene.Node
-import javafx.scene.control.Label
 
 class GameController(private val boardModel: BoardModel, private val gameView: GameView) {
+    private val bot: SimpleBot = SimpleBot(boardModel, gameView)
+
     init {
+        boardModel.bot = bot
         gameView.createWelcomeScreen(::handleStartGame) // Pass the start game handler to createWelcomeScreen
     }
 
@@ -26,9 +28,13 @@ class GameController(private val boardModel: BoardModel, private val gameView: G
         }
     }
 
+    fun offerCell(row: Int, col: Int) {
+        handleCellClick(row, col)
+    }
+
     private fun handleCellClick(row: Int, col: Int) {
         if (boardModel.makeMove(row, col)) {
-            updateUI(row, col)
+            gameView.updateUI(row, col, boardModel.getCell(row, col).symbol)
             val winner = boardModel.checkWin()
             if (winner != Player.NONE || boardModel.isBoardFull()) {
                 handleGameOver(winner)
@@ -63,15 +69,4 @@ class GameController(private val boardModel: BoardModel, private val gameView: G
         }
     }
 
-    private fun updateUI(row: Int, col: Int) {
-        val cell = gameView.getCell(row, col)
-        val currentPlayer = boardModel.getCell(row, col)
-        cell.children.stream()
-            .filter { node: Node? -> node is Label }
-            .map { node: Node -> node as Label }
-            .findFirst()
-            .ifPresent { label: Label ->
-                label.text = currentPlayer.symbol
-            }
-    }
 }

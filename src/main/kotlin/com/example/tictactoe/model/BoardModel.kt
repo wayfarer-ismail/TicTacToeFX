@@ -1,13 +1,23 @@
 package com.example.tictactoe.model
 
+import com.example.tictactoe.bot.SimpleBot
+
 class BoardModel(val boardSize: Int = 3) {
     private val board = Array(boardSize) { Array(boardSize) { Player.NONE } }
     private var currentPlayer = Player.X
+    var bot: SimpleBot? = null
 
     fun makeMove(row: Int, col: Int): Boolean {
         if (row in 0 until boardSize && col in 0 until boardSize && board[row][col] == Player.NONE) {
             board[row][col] = currentPlayer
-            currentPlayer = if (currentPlayer == Player.X) Player.O else Player.X
+
+            // After the user's move, if the game is not over, and it's the bots turn, let the bot make a move
+            if (currentPlayer == Player.X) {
+                currentPlayer = Player.O
+                bot?.makeMove()
+            } else {
+                currentPlayer = Player.X
+            }
             return true
         }
         return false
