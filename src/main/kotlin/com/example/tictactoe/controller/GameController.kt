@@ -6,22 +6,22 @@ import com.example.tictactoe.view.GameView
 import javafx.scene.Node
 import javafx.scene.control.Label
 
-import javafx.scene.input.MouseButton
-
 class GameController(private val boardModel: BoardModel, private val gameView: GameView) {
     init {
-        initializeCells()
+        gameView.createWelcomeScreen(::handleStartGame) // Pass the start game handler to createWelcomeScreen
+    }
+
+    private fun handleStartGame() {
+        gameView.switchToBoard() // Switch to the game board
+        initializeCells() // Initialize cells now that the board is displayed
     }
 
     private fun initializeCells() {
         for (row in 0 until boardModel.boardSize) {
             for (col in 0 until boardModel.boardSize) {
-                val cell = gameView.getCell(row, col)
-                cell.setOnMouseClicked { event ->
-                    if (event.button == MouseButton.PRIMARY) {
-                        handleCellClick(row, col)
-                    }
-                }
+                val cell = gameView.createCell()
+                cell.setOnMouseClicked { handleCellClick(row, col) }
+                gameView.boardPane.add(cell, col, row)
             }
         }
     }
@@ -30,10 +30,8 @@ class GameController(private val boardModel: BoardModel, private val gameView: G
         if (boardModel.makeMove(row, col)) {
             updateUI(row, col)
             val winner = boardModel.checkWin()
-            if (winner != Player.NONE) {
+            if (winner != Player.NONE || boardModel.isBoardFull()) {
                 handleGameOver(winner)
-            } else if (boardModel.isBoardFull()) {
-                handleDraw()
             }
         }
     }
@@ -42,14 +40,19 @@ class GameController(private val boardModel: BoardModel, private val gameView: G
         // Disable further moves and show win message
         disableCells()
 
-        println("Player ${winner.symbol} wins!")
+        if (winner == Player.NONE) {
+            gameView.createFarewellScreen("It's a draw!")
+        } else {
+            gameView.createFarewellScreen("Player ${winner.symbol} wins!")
+        }
+
+        // Add event handler to the farewell screen to restart the game
+        resetGame()
     }
 
-    private fun handleDraw() {
-        // Disable further moves and show draw message
-        disableCells()
-
-        println("It's a draw!")
+    private fun resetGame() {
+        boardModel.resetBoard()
+        gameView.boardPane.children.clear()
     }
 
     private fun disableCells() {
