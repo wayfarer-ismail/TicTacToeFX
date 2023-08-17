@@ -27,6 +27,13 @@ class BoardModel(val boardSize: Int = 3) {
         return if (row in 0 until boardSize && col in 0 until boardSize) board[row][col] else Player.NONE
     }
 
+    fun setCell(row: Int, col: Int, player: Player) {
+        if (row in 0 until boardSize && col in 0 until boardSize) {
+            board[row][col] = player
+        }
+    }
+
+
     fun checkWin(): Player {
         // Check rows
         for (row in 0 until boardSize) {

@@ -28,10 +28,6 @@ class GameController(private val boardModel: BoardModel, private val gameView: G
         }
     }
 
-    fun offerCell(row: Int, col: Int) {
-        handleCellClick(row, col)
-    }
-
     private fun handleCellClick(row: Int, col: Int) {
         if (boardModel.makeMove(row, col)) {
             gameView.updateUI(row, col, boardModel.getCell(row, col).symbol)
