@@ -8,6 +8,7 @@ import javafx.scene.input.MouseEvent
 import kotlin.random.Random
 
 class SimpleBot(private val boardModel: BoardModel, private val gameView: GameView) {
+    private val MAXDEPTH = 4
 
     fun makeMove() {
         println("making move")
@@ -21,10 +22,11 @@ class SimpleBot(private val boardModel: BoardModel, private val gameView: GameVi
             }
         }
 
-        mediumMove(emptyCells)
+        hardMove(emptyCells)
     }
 
     private fun placeOnCell(row: Int, col: Int) {
+        println("placing on cell $row, $col")
         gameView.getCell(row, col).fireEvent(
             MouseEvent(MouseEvent.MOUSE_CLICKED,
                 0.0, 0.0, 0.0, 0.0, MouseButton.PRIMARY, 1, false,
@@ -53,21 +55,18 @@ class SimpleBot(private val boardModel: BoardModel, private val gameView: GameVi
 
         // Check for potential winning move for the bot
         for ((row, col) in emptyCells) {
-            val originalSymbol = boardModel.getCell(row, col)
             boardModel.setCell(row, col, Player.O)
             if (boardModel.checkWin() == Player.O) {
                 boardModel.setCell(row, col, Player.NONE)
                 placeOnCell(row, col)
                 return
             }
-            boardModel.setCell(row, col, originalSymbol) // Reset the cell
+            boardModel.setCell(row, col, Player.NONE) // Reset the cell
         }
 
         // Check for potential winning move for the user and block it
         for ((row, col) in emptyCells) {
-            //val originalSymbol = boardModel.getCell(row, col)
             boardModel.setCell(row, col, Player.X)
-            //println("Checking for x win at $row, $col")
             if (boardModel.checkWin() == Player.X) {
                 boardModel.setCell(row, col, Player.NONE)
                 placeOnCell(row, col)
@@ -79,4 +78,44 @@ class SimpleBot(private val boardModel: BoardModel, private val gameView: GameVi
         // If no easy win or block is available, make a random move
         easyMove(emptyCells)
     }
+
+    private fun hardMove(emptyCells: List<Pair<Int, Int>>) {
+        val bestMove = minimax(boardModel, Player.O, emptyCells, 0)
+        val (row, col) = bestMove.second
+        if (row == -1 || col == -1)
+            easyMove(emptyCells.toMutableList())
+        else
+            placeOnCell(row, col)
+    }
+
+    private fun minimax(
+        board: BoardModel,
+        player: Player,
+        emptyCells: List<Pair<Int, Int>>,
+        depth: Int
+    ): Pair<Int, Pair<Int, Int>> {
+
+        if (board.checkWin() == Player.O) {
+            return Pair(1, Pair(-1, -1))
+        } else if (board.checkWin() == Player.X) {
+            return Pair(-1, Pair(-1, -1))
+        } else if (emptyCells.isEmpty() || depth >= MAXDEPTH) { // Add a depth limit
+            return Pair(0, Pair(-1, -1))
+        }
+
+        val moves = mutableListOf<Pair<Int, Pair<Int, Int>>>()
+        for (move in emptyCells) {
+            val newBoard = board.clone()
+            newBoard.setCell(move.first, move.second, player)
+            val result = minimax(newBoard, player.opposite(), emptyCells, depth + 1)
+            moves.add(Pair(result.first, move))
+        }
+
+        return if (player == Player.O) {
+            moves.maxByOrNull { it.first } ?: Pair(0, Pair(-1, -1))
+        } else {
+            moves.minByOrNull { it.first } ?: Pair(0, Pair(-1, -1))
+        }
+    }
+
 }

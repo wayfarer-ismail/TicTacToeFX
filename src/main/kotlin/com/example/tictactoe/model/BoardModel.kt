@@ -8,6 +8,7 @@ class BoardModel(val boardSize: Int = 3) {
     var bot: SimpleBot? = null
 
     fun makeMove(row: Int, col: Int): Boolean {
+        if (checkWin() != Player.NONE || isBoardFull()) return false
         if (row in 0 until boardSize && col in 0 until boardSize && board[row][col] == Player.NONE) {
             board[row][col] = currentPlayer
 
@@ -71,5 +72,17 @@ class BoardModel(val boardSize: Int = 3) {
             }
         }
         currentPlayer = Player.X
+    }
+
+    fun clone(): BoardModel {
+        val clonedBoardModel = BoardModel(boardSize)
+        for (row in 0 until boardSize) {
+            for (col in 0 until boardSize) {
+                clonedBoardModel.setCell(row, col, getCell(row, col))
+            }
+        }
+        clonedBoardModel.currentPlayer = currentPlayer
+        clonedBoardModel.bot = bot
+        return clonedBoardModel
     }
 }

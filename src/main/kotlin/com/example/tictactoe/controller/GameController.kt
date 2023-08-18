@@ -31,10 +31,10 @@ class GameController(private val boardModel: BoardModel, private val gameView: G
     private fun handleCellClick(row: Int, col: Int) {
         if (boardModel.makeMove(row, col)) {
             gameView.updateUI(row, col, boardModel.getCell(row, col).symbol)
-            val winner = boardModel.checkWin()
-            if (winner != Player.NONE || boardModel.isBoardFull()) {
-                handleGameOver(winner)
-            }
+        }
+        val winner = boardModel.checkWin()
+        if (winner != Player.NONE || boardModel.isBoardFull()) {
+            handleGameOver(winner)
         }
     }
 
