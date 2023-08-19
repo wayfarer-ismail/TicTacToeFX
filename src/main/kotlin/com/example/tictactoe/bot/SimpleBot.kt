@@ -8,7 +8,7 @@ import javafx.scene.input.MouseEvent
 import kotlin.random.Random
 
 class SimpleBot(private val boardModel: BoardModel, private val gameView: GameView) {
-    private val MAXDEPTH = 4
+    private val MAXDEPTH = 8
 
     fun makeMove() {
         println("making move")
@@ -81,6 +81,7 @@ class SimpleBot(private val boardModel: BoardModel, private val gameView: GameVi
 
     private fun hardMove(emptyCells: List<Pair<Int, Int>>) {
         val bestMove = minimax(boardModel, Player.O, emptyCells, 0)
+        println("best move: ${bestMove.second} with score ${bestMove.first}")
         val (row, col) = bestMove.second
         if (row == -1 || col == -1)
             easyMove(emptyCells.toMutableList())
@@ -88,34 +89,37 @@ class SimpleBot(private val boardModel: BoardModel, private val gameView: GameVi
             placeOnCell(row, col)
     }
 
-    private fun minimax(
-        board: BoardModel,
-        player: Player,
-        emptyCells: List<Pair<Int, Int>>,
-        depth: Int
-    ): Pair<Int, Pair<Int, Int>> {
+    private fun minimax(board: BoardModel,
+                        player: Player,
+                        emptyCells: List<Pair<Int, Int>>,
+                        depth: Int): Pair<Int, Pair<Int, Int>> {
 
-        if (board.checkWin() == Player.O) {
-            return Pair(1, Pair(-1, -1))
-        } else if (board.checkWin() == Player.X) {
-            return Pair(-1, Pair(-1, -1))
-        } else if (emptyCells.isEmpty() || depth >= MAXDEPTH) { // Add a depth limit
-            return Pair(0, Pair(-1, -1))
+        if (board.checkWin() == player) {
+            return 100 to Pair(-1, -1) // Maximize
+        } else if (board.checkWin() == player.opposite()) {
+            return -100 to Pair(-1, -1) // Tie
+        } else if (emptyCells.isEmpty() || depth == MAXDEPTH) {
+            return 0 to Pair(-1, -1) // Minimize
         }
 
-        val moves = mutableListOf<Pair<Int, Pair<Int, Int>>>()
-        for (move in emptyCells) {
+        var bestScore = if (player == Player.O) Int.MIN_VALUE else Int.MAX_VALUE
+        var bestMove = Pair(-1, -1)
+
+        for (cell in emptyCells) {
             val newBoard = board.clone()
-            newBoard.setCell(move.first, move.second, player)
-            val result = minimax(newBoard, player.opposite(), emptyCells, depth + 1)
-            moves.add(Pair(result.first, move))
+            newBoard.setCell(cell.first, cell.second, player)
+
+            // Recursively call minimax on the new board
+            val (score, _) = minimax(newBoard, if (player == Player.O) Player.X else Player.O, emptyCells.minus(cell), depth + 1)
+
+            // Update the best score and move if necessary
+            if (player == Player.O && score > bestScore || player == Player.X && score < bestScore) {
+                bestScore = score
+                bestMove = cell
+            }
         }
 
-        return if (player == Player.O) {
-            moves.maxByOrNull { it.first } ?: Pair(0, Pair(-1, -1))
-        } else {
-            moves.minByOrNull { it.first } ?: Pair(0, Pair(-1, -1))
-        }
+        return bestScore to bestMove
     }
 
 }
