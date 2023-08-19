@@ -10,12 +10,21 @@ class GameController(private val boardModel: BoardModel, private val gameView: G
 
     init {
         boardModel.bot = bot
-        gameView.createWelcomeScreen(::handleStartGame) // Pass the start game handler to createWelcomeScreen
+        gameView.createWelcomeScreen(::handleStartGame, ::handleDifficultySelection) // Pass the start game handler to createWelcomeScreen
     }
 
     private fun handleStartGame() {
         gameView.switchToBoard() // Switch to the game board
         initializeCells() // Initialize cells now that the board is displayed
+    }
+
+    private fun handleDifficultySelection(selectedDifficulty: String) {
+        when (selectedDifficulty) {
+            "Easy" -> bot.setDifficulty(SimpleBot.Difficulty.EASY)
+            "Medium" -> bot.setDifficulty(SimpleBot.Difficulty.MEDIUM)
+            "Hard" -> bot.setDifficulty(SimpleBot.Difficulty.HARD)
+            else -> throw IllegalArgumentException("Invalid difficulty")
+        }
     }
 
     private fun initializeCells() {

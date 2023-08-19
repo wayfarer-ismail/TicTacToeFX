@@ -9,6 +9,16 @@ import kotlin.random.Random
 
 class SimpleBot(private val boardModel: BoardModel, private val gameView: GameView) {
     private val MAXDEPTH = 8
+    enum class Difficulty {
+        EASY,
+        MEDIUM,
+        HARD
+    }
+    private var difficulty = Difficulty.EASY
+
+    fun setDifficulty(difficulty: Difficulty) {
+        this.difficulty = difficulty
+    }
 
     fun makeMove() {
         println("making move")
@@ -22,7 +32,11 @@ class SimpleBot(private val boardModel: BoardModel, private val gameView: GameVi
             }
         }
 
-        hardMove(emptyCells)
+        when (difficulty) {
+            Difficulty.EASY -> easyMove(emptyCells)
+            Difficulty.MEDIUM -> mediumMove(emptyCells)
+            Difficulty.HARD -> hardMove(emptyCells)
+        }
     }
 
     private fun placeOnCell(row: Int, col: Int) {
@@ -80,6 +94,8 @@ class SimpleBot(private val boardModel: BoardModel, private val gameView: GameVi
     }
 
     private fun hardMove(emptyCells: List<Pair<Int, Int>>) {
+        val moves = minimaxHelper(emptyCells)
+        moves.forEach { println("score: ${it.first}, cell: ${it.second}") }
         val bestMove = minimax(boardModel, Player.O, emptyCells, 0)
         println("best move: ${bestMove.second} with score ${bestMove.first}")
         val (row, col) = bestMove.second
@@ -89,15 +105,26 @@ class SimpleBot(private val boardModel: BoardModel, private val gameView: GameVi
             placeOnCell(row, col)
     }
 
+    private fun minimaxHelper(emptyCells: List<Pair<Int, Int>>): List<Pair<Int, Pair<Int, Int>>> {
+        val moves = mutableListOf<Pair<Int, Pair<Int, Int>>>()
+        for (cell in emptyCells) {
+            val newBoard = boardModel.clone()
+            newBoard.setCell(cell.first, cell.second, Player.O)
+            val (score, _) = minimax(newBoard, Player.X, emptyCells.minus(cell), 0)
+            moves.add(score to cell)
+        }
+        return moves
+    }
+
     private fun minimax(board: BoardModel,
                         player: Player,
                         emptyCells: List<Pair<Int, Int>>,
                         depth: Int): Pair<Int, Pair<Int, Int>> {
 
         if (board.checkWin() == player) {
-            return 100 to Pair(-1, -1) // Maximize
+            return 10 - depth to Pair(-1, -1) // Maximize
         } else if (board.checkWin() == player.opposite()) {
-            return -100 to Pair(-1, -1) // Tie
+            return -10 - depth to Pair(-1, -1) // Tie
         } else if (emptyCells.isEmpty() || depth == MAXDEPTH) {
             return 0 to Pair(-1, -1) // Minimize
         }
@@ -110,8 +137,8 @@ class SimpleBot(private val boardModel: BoardModel, private val gameView: GameVi
             newBoard.setCell(cell.first, cell.second, player)
 
             // Recursively call minimax on the new board
-            val (score, _) = minimax(newBoard, if (player == Player.O) Player.X else Player.O, emptyCells.minus(cell), depth + 1)
-
+            val (score, _) = minimax(newBoard, player.opposite(), emptyCells.minus(cell), depth + 1)
+            //println("score: $score")
             // Update the best score and move if necessary
             if (player == Player.O && score > bestScore || player == Player.X && score < bestScore) {
                 bestScore = score

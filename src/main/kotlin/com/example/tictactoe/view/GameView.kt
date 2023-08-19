@@ -3,9 +3,11 @@ package com.example.tictactoe.view
 import javafx.geometry.Pos
 import javafx.scene.Node
 import javafx.scene.control.Button
+import javafx.scene.control.ComboBox
 import javafx.scene.control.Label
 import javafx.scene.layout.GridPane
 import javafx.scene.layout.StackPane
+import javafx.scene.layout.VBox
 import javafx.scene.paint.Color
 import javafx.scene.shape.Rectangle
 import javafx.scene.text.Font
@@ -43,14 +45,30 @@ class GameView {
         return boardPane.children[row * 3 + col] as StackPane
     }
 
-    fun createWelcomeScreen(startGameHandler: () -> Unit) {
-        val welcomePane = StackPane()
+    fun createWelcomeScreen(startGameHandler: () -> Unit, difficultySelectionHandler: (String) -> Unit) {
+        val welcomePane = VBox(20.0) // Create a VBox with spacing
 
         val startButton = Button("Start Game")
         startButton.style = "-fx-font-size: 18px;"
-        startButton.setOnAction { startGameHandler() } // Call the provided handler
+        startButton.setOnAction {
+            startGameHandler.invoke()
+        }
 
-        welcomePane.children.add(startButton)
+        val difficultyComboBox = ComboBox<String>()
+        difficultyComboBox.items.addAll("Easy", "Medium", "Hard")
+        difficultyComboBox.selectionModel.selectFirst()
+        difficultyComboBox.style = "-fx-font-size: 18px;"
+
+        val selectButton = Button("Select Difficulty")
+        selectButton.style = "-fx-font-size: 18px;"
+        selectButton.setOnAction {
+            val selectedDifficulty = difficultyComboBox.selectionModel.selectedItem
+            difficultySelectionHandler.invoke(selectedDifficulty)
+        }
+
+        welcomePane.alignment = Pos.CENTER // Align elements in the center
+        welcomePane.children.addAll(difficultyComboBox, selectButton, startButton)
+
         root.children.add(welcomePane)
     }
 
