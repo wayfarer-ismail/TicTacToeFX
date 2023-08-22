@@ -5,13 +5,13 @@ import javafx.scene.Node
 import javafx.scene.control.Button
 import javafx.scene.control.ComboBox
 import javafx.scene.control.Label
-import javafx.scene.layout.GridPane
-import javafx.scene.layout.StackPane
-import javafx.scene.layout.VBox
+import javafx.scene.image.Image
+import javafx.scene.layout.*
 import javafx.scene.paint.Color
 import javafx.scene.shape.Rectangle
 import javafx.scene.text.Font
 import javafx.scene.text.Text
+import java.io.File
 
 class GameView {
     val root: StackPane = StackPane()
@@ -19,6 +19,34 @@ class GameView {
 
     init {
         root.alignment = Pos.CENTER
+        boardPane.alignment = Pos.CENTER
+
+        initMainBoard()
+    }
+
+    private fun initMainBoard() {
+        val backgroundImage =
+            Image("file:background.png", 300.0, 300.0, false, true)
+
+        println(backgroundImage.url)
+        val background = Background(
+            BackgroundImage(
+                backgroundImage,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                null,
+                BackgroundSize(
+                    BackgroundSize.AUTO,
+                    BackgroundSize.AUTO,
+                    false,
+                    false,
+                    true,
+                    true
+                )
+            )
+        )
+
+        root.background = background
     }
 
     fun createCell(): StackPane {
@@ -47,7 +75,7 @@ class GameView {
         val welcomePane = VBox(20.0) // Create a VBox with spacing
 
         val startButton = Button("Start Game")
-        startButton.style = "-fx-font-size: 18px;"
+        applyTheme(startButton)
         startButton.setOnAction {
             startGameHandler.invoke()
         }
@@ -55,10 +83,10 @@ class GameView {
         val difficultyComboBox = ComboBox<String>()
         difficultyComboBox.items.addAll("Easy", "Medium", "Hard")
         difficultyComboBox.selectionModel.selectFirst()
-        difficultyComboBox.style = "-fx-font-size: 18px;"
+        applyTheme(difficultyComboBox)
 
         val selectButton = Button("Select Difficulty")
-        selectButton.style = "-fx-font-size: 18px;"
+        applyTheme(selectButton)
         selectButton.setOnAction {
             val selectedDifficulty = difficultyComboBox.selectionModel.selectedItem
             difficultySelectionHandler.invoke(selectedDifficulty)
@@ -68,6 +96,16 @@ class GameView {
         welcomePane.children.addAll(difficultyComboBox, selectButton, startButton)
 
         root.children.add(welcomePane)
+    }
+
+    private fun applyTheme(node: Node) {
+        node.style = "-fx-font-size: 18px; -fx-background-color: white; -fx-border-color: orange; -fx-border-width: 2px;"
+        node.setOnMouseEntered {
+            node.style = "-fx-font-size: 18px; -fx-background-color: white; -fx-border-color: orange; -fx-border-width: 2px; -fx-effect: dropshadow(gaussian, orange, 10, 0.5, 0, 0);"
+        }
+        node.setOnMouseExited {
+            node.style = "-fx-font-size: 18px; -fx-background-color: white; -fx-border-color: orange; -fx-border-width: 2px;"
+        }
     }
 
     fun switchToBoard() {
