@@ -94,7 +94,6 @@ class SimpleBot(private val boardModel: BoardModel, private val gameView: GameVi
     }
 
     private fun hardMove(emptyCells: List<Pair<Int, Int>>) {
-        println("score |   cell   | depth | player")
         val bestMove = minimax(boardModel, Player.O, emptyCells, 0)
         println("best move: ${bestMove.second} with score ${bestMove.first}")
         val (row, col) = bestMove.second
@@ -112,9 +111,9 @@ class SimpleBot(private val boardModel: BoardModel, private val gameView: GameVi
         if (board.checkWin() == Player.O) {
             return 10 - depth to Pair(-1, -1) // Maximize
         } else if (board.checkWin() == Player.X) {
-            return -10 + depth to Pair(-1, -1) // Tie
+            return -10 + depth to Pair(-1, -1) // Minimize
         } else if (board.isBoardFull()) {
-            return 0 to Pair(-1, -1) // Minimize
+            return 0 to Pair(-1, -1) // Tie
         }
 
         val moves = mutableListOf<Pair<Int, Pair<Int, Int>>>()
@@ -128,12 +127,9 @@ class SimpleBot(private val boardModel: BoardModel, private val gameView: GameVi
             moves.add(score to cell)
         }
 
-        moves.forEach { println(String.format("%5s | %8s | %5s | %s ", it.first, it.second, depth, player)) }
-
         val isLoosing = depth == 0 && moves.fold(true) { acc, pair -> acc && pair.first <= 0 }
         // if the users next move is a win for them, choose the move that blocks their win,
         // otherwise weigh between potential wins and losses for the bot using abs value.
         return if (isLoosing) moves.maxBy { it.first } else moves.maxBy { abs(it.first) }
     }
-
 }

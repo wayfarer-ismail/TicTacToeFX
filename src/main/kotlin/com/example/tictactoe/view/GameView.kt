@@ -14,7 +14,7 @@ import javafx.scene.text.Font
 import javafx.scene.text.Text
 
 class GameView {
-    val root: StackPane = StackPane() // Change root type to StackPane
+    val root: StackPane = StackPane()
     val boardPane: GridPane = GridPane()
 
     init {
@@ -35,8 +35,6 @@ class GameView {
         cell.prefWidth = cellSize
         cell.prefHeight = cellSize
         cell.children.addAll(cellBackground, label)
-
-        // Add event handling for user interaction (e.g., mouse click) here
 
         return cell
     }
@@ -72,7 +70,6 @@ class GameView {
         root.children.add(welcomePane)
     }
 
-
     fun switchToBoard() {
         root.children.clear()
         root.children.add(boardPane)
@@ -96,7 +93,4 @@ class GameView {
                 label.text = currentPlayer
             }
     }
-
-
-    // Add methods to update the UI based on the board state here
 }

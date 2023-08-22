@@ -34,7 +34,6 @@ class BoardModel(val boardSize: Int = 3) {
         }
     }
 
-
     fun checkWin(): Player {
         // Check rows
         for (row in 0 until boardSize) {
