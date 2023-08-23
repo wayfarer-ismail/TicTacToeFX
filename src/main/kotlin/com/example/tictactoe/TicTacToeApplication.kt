@@ -13,7 +13,7 @@ class TicTacToeApplication : Application() {
         val gameView = GameView()
         val gameController = GameController(boardModel, gameView)
 
-        val scene = Scene(gameView.root, 300.0, 300.0)
+        val scene = Scene(gameView.root, 500.0, 500.0)
         primaryStage.title = "Tic Tac Toe"
         primaryStage.scene = scene
         primaryStage.show()

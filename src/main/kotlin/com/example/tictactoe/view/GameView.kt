@@ -11,7 +11,6 @@ import javafx.scene.paint.Color
 import javafx.scene.shape.Rectangle
 import javafx.scene.text.Font
 import javafx.scene.text.Text
-import java.io.File
 
 class GameView {
     val root: StackPane = StackPane()
@@ -21,14 +20,9 @@ class GameView {
         root.alignment = Pos.CENTER
         boardPane.alignment = Pos.CENTER
 
-        initMainBoard()
-    }
-
-    private fun initMainBoard() {
         val backgroundImage =
-            Image("file:background.png", 300.0, 300.0, false, true)
+            Image("https://wallpapercave.com/wp/wp9844348.png")
 
-        println(backgroundImage.url)
         val background = Background(
             BackgroundImage(
                 backgroundImage,
