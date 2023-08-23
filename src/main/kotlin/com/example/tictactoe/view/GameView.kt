@@ -1,5 +1,8 @@
 package com.example.tictactoe.view
 
+import javafx.animation.KeyFrame
+import javafx.animation.KeyValue
+import javafx.animation.Timeline
 import javafx.geometry.Pos
 import javafx.scene.Node
 import javafx.scene.control.Button
@@ -13,6 +16,7 @@ import javafx.scene.paint.Color
 import javafx.scene.shape.Rectangle
 import javafx.scene.text.Font
 import javafx.scene.text.Text
+import javafx.util.Duration
 
 class GameView {
     val root: StackPane = StackPane()
@@ -22,8 +26,7 @@ class GameView {
         root.alignment = Pos.CENTER
         boardPane.alignment = Pos.CENTER
 
-        val backgroundImage =
-            Image("https://wallpapercave.com/wp/wp9844348.png")
+        val backgroundImage = Image("https://wallpapercave.com/wp/wp9844348.png")
 
         val background = Background(
             BackgroundImage(
@@ -122,10 +125,46 @@ class GameView {
 
     fun createFarewellScreen(message: String) {
         val farewellText = Text(message)
-        farewellText.font = Font.font(24.0)
+        farewellText.font = Font.font(30.0)
+
+        // Create a colored rectangle as the background
+        val background = Rectangle(300.0, 80.0) // Adjust width and height as needed
+        background.fill = Color.DARKORANGE.deriveColor(0.4, 1.0, 1.0, 0.3)
+
+        // Create a container to hold the background and the text
+        val farewellPane = StackPane()
+        farewellPane.alignment = Pos.CENTER
+        farewellPane.children.addAll(background, farewellText)
 
         root.children.clear()
-        root.children.add(farewellText)
+        root.children.add(farewellPane)
+        playWinAnimation(root)
+    }
+
+    private fun playWinAnimation(root: StackPane) {
+        val pane = StackPane()
+        pane.style = "-fx-background-color: #0ff7f0; -fx-padding: 20px;"
+        pane.opacity = 0.0 // Start with zero opacity
+
+        val timeline = Timeline()
+        val fadeIn = KeyFrame(
+            Duration.seconds(2.0),
+            KeyValue(pane.opacityProperty(), 0.25)
+        )
+        val fadeOut = KeyFrame(
+            Duration.seconds(3.0),
+            KeyValue(pane.opacityProperty(), 0.0)
+        )
+        timeline.keyFrames.addAll(fadeIn, fadeOut)
+
+        root.children.add(pane)
+
+        timeline.setOnFinished {
+            // Remove the pane node when the animation is finished
+            root.children.remove(pane)
+        }
+
+        timeline.play()
     }
 
     fun updateUI(row: Int, col: Int, currentPlayer: String) {
