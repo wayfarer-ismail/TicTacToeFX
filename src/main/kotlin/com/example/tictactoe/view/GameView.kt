@@ -4,7 +4,9 @@ import javafx.geometry.Pos
 import javafx.scene.Node
 import javafx.scene.control.Button
 import javafx.scene.control.ComboBox
+import javafx.scene.control.Control
 import javafx.scene.control.Label
+import javafx.scene.effect.BoxBlur
 import javafx.scene.image.Image
 import javafx.scene.layout.*
 import javafx.scene.paint.Color
@@ -48,7 +50,7 @@ class GameView {
 
         val cellBackground = Rectangle(cellSize, cellSize)
         cellBackground.fill = Color.WHITE
-        cellBackground.stroke = Color.BLACK
+        cellBackground.stroke = Color.DARKORANGE
 
         val label = Label("-")
         label.font = Font.font(36.0)
@@ -57,6 +59,16 @@ class GameView {
         cell.prefWidth = cellSize
         cell.prefHeight = cellSize
         cell.children.addAll(cellBackground, label)
+
+        // Add event handling for hover and click effects
+        // Add shadow on hover
+        cell.setOnMouseEntered { cellBackground.effect = BoxBlur() }
+        // Remove shadow on mouse exit
+        cell.setOnMouseExited { cellBackground.effect = null }
+        // Make the cell color slightly dimmer on click
+        cell.setOnMousePressed { cellBackground.fill = Color.LIGHTGRAY }
+        // Restore the original color when the mouse is released
+        cell.setOnMouseReleased { cellBackground.fill = Color.WHITE }
 
         return cell
     }
@@ -92,7 +104,7 @@ class GameView {
         root.children.add(welcomePane)
     }
 
-    private fun applyTheme(node: Node) {
+    private fun applyTheme(node: Control) {
         node.style = "-fx-font-size: 18px; -fx-background-color: white; -fx-border-color: orange; -fx-border-width: 2px;"
         node.setOnMouseEntered {
             node.style = "-fx-font-size: 18px; -fx-background-color: white; -fx-border-color: orange; -fx-border-width: 2px; -fx-effect: dropshadow(gaussian, orange, 10, 0.5, 0, 0);"
@@ -100,6 +112,7 @@ class GameView {
         node.setOnMouseExited {
             node.style = "-fx-font-size: 18px; -fx-background-color: white; -fx-border-color: orange; -fx-border-width: 2px;"
         }
+        node.prefWidth = 160.0
     }
 
     fun switchToBoard() {
