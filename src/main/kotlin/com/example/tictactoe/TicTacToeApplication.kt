@@ -14,6 +14,10 @@ class TicTacToeApplication : Application() {
         val gameController = GameController(boardModel, gameView)
 
         val scene = Scene(gameView.root, 500.0, 500.0)
+        primaryStage.minWidth = 400.0
+        primaryStage.minHeight = 400.0
+        primaryStage.maxHeight = 600.0
+        primaryStage.maxWidth = 600.0
         primaryStage.title = "Tic Tac Toe"
         primaryStage.scene = scene
         primaryStage.show()

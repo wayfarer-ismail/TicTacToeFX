@@ -15,6 +15,7 @@ import javafx.scene.layout.*
 import javafx.scene.paint.Color
 import javafx.scene.shape.Rectangle
 import javafx.scene.text.Font
+import javafx.scene.text.FontWeight
 import javafx.scene.text.Text
 import javafx.util.Duration
 
@@ -24,9 +25,12 @@ class GameView {
 
     init {
         root.alignment = Pos.CENTER
+        root.minWidth = 500.0
+        root.minHeight = 500.0
+
         boardPane.alignment = Pos.CENTER
 
-        val backgroundImage = Image("https://wallpapercave.com/wp/wp9844348.png")
+        val backgroundImage = Image("https://i.ibb.co/VH8970J/tictactoe-background-1.png")
 
         val background = Background(
             BackgroundImage(
@@ -56,7 +60,7 @@ class GameView {
         cellBackground.stroke = Color.DARKORANGE
 
         val label = Label("-")
-        label.font = Font.font(36.0)
+        label.font = Font.font("Arial", FontWeight.MEDIUM, 50.0)
 
         val cell = StackPane()
         cell.prefWidth = cellSize
@@ -108,12 +112,13 @@ class GameView {
     }
 
     private fun applyTheme(node: Control) {
-        node.style = "-fx-font-size: 18px; -fx-background-color: white; -fx-border-color: orange; -fx-border-width: 2px;"
+        val normalStyle = "-fx-font-family: Arial; -fx-font-size: 18px; -fx-background-color: white; -fx-border-color: orange; -fx-border-width: 2px; -fx-font-weight: normal;"
+        node.style = normalStyle
         node.setOnMouseEntered {
-            node.style = "-fx-font-size: 18px; -fx-background-color: white; -fx-border-color: orange; -fx-border-width: 2px; -fx-effect: dropshadow(gaussian, orange, 10, 0.5, 0, 0);"
+            node.style = "$normalStyle -fx-effect: dropshadow(gaussian, orange, 10, 0.5, 0, 0);"
         }
         node.setOnMouseExited {
-            node.style = "-fx-font-size: 18px; -fx-background-color: white; -fx-border-color: orange; -fx-border-width: 2px;"
+            node.style = normalStyle
         }
         node.prefWidth = 160.0
     }
@@ -125,11 +130,12 @@ class GameView {
 
     fun createFarewellScreen(message: String) {
         val farewellText = Text(message)
-        farewellText.font = Font.font(30.0)
+        farewellText.fill = Color.WHITE
+        farewellText.font = Font.font("Arial", FontWeight.BOLD, 30.0)
 
         // Create a colored rectangle as the background
-        val background = Rectangle(300.0, 80.0) // Adjust width and height as needed
-        background.fill = Color.DARKORANGE.deriveColor(0.4, 1.0, 1.0, 0.3)
+        val background = Rectangle(250.0, 80.0) // Adjust width and height as needed
+        background.fill = Color.DARKORANGE.deriveColor(0.4, 1.0, 1.0, 0.6)
 
         // Create a container to hold the background and the text
         val farewellPane = StackPane()
@@ -141,7 +147,7 @@ class GameView {
         playWinAnimation(root)
     }
 
-    private fun playWinAnimation(root: StackPane) {
+    fun playWinAnimation(root: StackPane) {
         val pane = StackPane()
         pane.style = "-fx-background-color: #0ff7f0; -fx-padding: 20px;"
         pane.opacity = 0.0 // Start with zero opacity
