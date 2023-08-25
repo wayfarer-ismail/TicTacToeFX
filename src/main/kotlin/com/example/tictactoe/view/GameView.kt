@@ -94,7 +94,7 @@ class GameView {
         }
 
         val difficultyComboBox = ComboBox<String>()
-        difficultyComboBox.items.addAll("Easy", "Medium", "Hard")
+        difficultyComboBox.items.addAll("Easy", "Medium", "Hard", "Challenging")
         difficultyComboBox.selectionModel.selectFirst()
         applyTheme(difficultyComboBox)
 
@@ -147,7 +147,7 @@ class GameView {
         playWinAnimation(root)
     }
 
-    fun playWinAnimation(root: StackPane) {
+    private fun playWinAnimation(root: StackPane) {
         val pane = StackPane()
         pane.style = "-fx-background-color: #0ff7f0; -fx-padding: 20px;"
         pane.opacity = 0.0 // Start with zero opacity

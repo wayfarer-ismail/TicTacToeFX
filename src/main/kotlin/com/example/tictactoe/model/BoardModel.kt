@@ -1,11 +1,11 @@
 package com.example.tictactoe.model
 
-import com.example.tictactoe.bot.SimpleBot
+import com.example.tictactoe.bot.Bot
 
 class BoardModel(val boardSize: Int = 3) {
     private val board = Array(boardSize) { Array(boardSize) { Player.NONE } }
     private var currentPlayer = Player.X
-    var bot: SimpleBot? = null
+    var bot: Bot? = null
 
     fun makeMove(row: Int, col: Int): Boolean {
         if (checkWin() != Player.NONE || isBoardFull()) return false

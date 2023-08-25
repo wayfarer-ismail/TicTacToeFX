@@ -1,12 +1,13 @@
 package com.example.tictactoe.controller
 
-import com.example.tictactoe.bot.SimpleBot
+import com.example.tictactoe.bot.Bot
+import com.example.tictactoe.bot.Bot.Difficulty
 import com.example.tictactoe.model.BoardModel
 import com.example.tictactoe.model.Player
 import com.example.tictactoe.view.GameView
 
 class GameController(private val boardModel: BoardModel, private val gameView: GameView) {
-    private val bot: SimpleBot = SimpleBot(boardModel, gameView)
+    private val bot: Bot = Bot(boardModel, gameView)
 
     init {
         boardModel.bot = bot
@@ -20,9 +21,10 @@ class GameController(private val boardModel: BoardModel, private val gameView: G
 
     private fun handleDifficultySelection(selectedDifficulty: String) {
         when (selectedDifficulty) {
-            "Easy" -> bot.setDifficulty(SimpleBot.Difficulty.EASY)
-            "Medium" -> bot.setDifficulty(SimpleBot.Difficulty.MEDIUM)
-            "Hard" -> bot.setDifficulty(SimpleBot.Difficulty.HARD)
+            "Easy" -> bot.setDifficulty(Difficulty.EASY)
+            "Medium" -> bot.setDifficulty(Difficulty.MEDIUM)
+            "Hard" -> bot.setDifficulty(Difficulty.HARD)
+            "Challenging" -> bot.setDifficulty(Difficulty.CHALLENGING)
             else -> throw IllegalArgumentException("Invalid difficulty")
         }
     }
