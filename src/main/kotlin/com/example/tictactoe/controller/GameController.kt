@@ -53,19 +53,20 @@ class GameController(private val boardModel: BoardModel, private val gameView: G
         // Disable further moves and show win message
         disableCells()
 
-        if (winner == Player.NONE) {
-            gameView.createFarewellScreen("It's a draw!")
-        } else {
-            gameView.createFarewellScreen("Player ${winner.symbol} wins!")
-        }
+        val message = if (winner == Player.NONE) "It's a draw!" else "Player ${winner.symbol} wins!"
+        gameView.createFarewellScreen(message, ::resetGame)
 
         // Add event handler to the farewell screen to restart the game
-        resetGame()
+        //resetGame()
     }
 
     private fun resetGame() {
+        // Reset the board model
         boardModel.resetBoard()
-        gameView.boardPane.children.clear()
+
+        // Clear the board view and enable cells
+        gameView.resetBoard()
+        gameView.createWelcomeScreen(::handleStartGame, ::handleDifficultySelection)
     }
 
     private fun disableCells() {

@@ -128,13 +128,20 @@ class GameView {
         root.children.add(boardPane)
     }
 
-    fun createFarewellScreen(message: String) {
+    fun createFarewellScreen(message: String, resetHandler: () -> Unit) {
         val farewellText = Text(message)
         farewellText.fill = Color.WHITE
         farewellText.font = Font.font("Arial", FontWeight.BOLD, 30.0)
 
+        // Create a reset button
+        val resetButton = Button("Play Again")
+        applyTheme(resetButton)
+        resetButton.setOnAction {
+            resetHandler.invoke()
+        }
+
         // Create a colored rectangle as the background
-        val background = Rectangle(250.0, 80.0) // Adjust width and height as needed
+        val background = Rectangle(300.0, 55.0) // Adjust width and height as needed
         background.fill = Color.DARKORANGE.deriveColor(0.4, 1.0, 1.0, 0.6)
 
         // Create a container to hold the background and the text
@@ -142,8 +149,12 @@ class GameView {
         farewellPane.alignment = Pos.CENTER
         farewellPane.children.addAll(background, farewellText)
 
-        root.children.clear()
-        root.children.add(farewellPane)
+        // Create a VBox to hold the text and button with a gap of 300px
+        val farewellBox = VBox(320.0)
+        farewellBox.alignment = Pos.CENTER
+        farewellBox.children.addAll(farewellPane, resetButton)
+
+        root.children.add(farewellBox)
         playWinAnimation(root)
     }
 
@@ -182,5 +193,11 @@ class GameView {
             .ifPresent { label: Label ->
                 label.text = currentPlayer
             }
+    }
+
+    fun resetBoard() {
+        boardPane.children.clear()
+        root.children.clear()
+        root.children.add(boardPane)
     }
 }
