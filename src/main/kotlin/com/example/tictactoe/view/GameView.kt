@@ -1,5 +1,6 @@
 package com.example.tictactoe.view
 
+import com.example.tictactoe.controller.GameController
 import javafx.animation.KeyFrame
 import javafx.animation.KeyValue
 import javafx.animation.Timeline
@@ -84,8 +85,17 @@ class GameView {
         return boardPane.children[row * 3 + col] as StackPane
     }
 
-    fun createWelcomeScreen(startGameHandler: () -> Unit, difficultySelectionHandler: (String) -> Unit) {
-        val welcomePane = VBox(20.0) // Create a VBox with spacing
+    fun createWelcomeScreen(startGameHandler: () -> Unit, difficultySelectionHandler: (String) -> Unit, scores: GameController.Scores) {
+        val welcomePane = VBox(80.0) // Create a VBox with spacing
+
+        val playerXLabel = Label("Player X Wins: ${scores.playerXWins}")
+        val playerOLabel = Label("Player O Wins: ${scores.playerOWins}")
+        applyTheme(playerXLabel)
+        applyTheme(playerOLabel)
+        val scoresBox = HBox(10.0)
+        scoresBox.alignment = Pos.CENTER
+        scoresBox.children.addAll(playerXLabel, playerOLabel)
+
 
         val startButton = Button("Start Game")
         applyTheme(startButton)
@@ -105,8 +115,12 @@ class GameView {
             difficultySelectionHandler.invoke(selectedDifficulty)
         }
 
+        val optionsBox = HBox(10.0)
+        optionsBox.alignment = Pos.CENTER
+        optionsBox.children.addAll(difficultyComboBox, selectButton)
+
         welcomePane.alignment = Pos.CENTER // Align elements in the center
-        welcomePane.children.addAll(difficultyComboBox, selectButton, startButton)
+        welcomePane.children.addAll(optionsBox, startButton, scoresBox)
 
         root.children.add(welcomePane)
     }
@@ -121,6 +135,7 @@ class GameView {
             node.style = normalStyle
         }
         node.prefWidth = 160.0
+        node.prefHeight = 40.0
     }
 
     fun switchToBoard() {

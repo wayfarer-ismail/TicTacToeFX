@@ -7,11 +7,30 @@ import com.example.tictactoe.model.Player
 import com.example.tictactoe.view.GameView
 
 class GameController(private val boardModel: BoardModel, private val gameView: GameView) {
+    data class Scores(private var playerXScore: Int = 0, private var playerOScore: Int = 0) {
+        val playerXWins: Int
+            get() = playerXScore
+
+        val playerOWins: Int
+            get() = playerOScore
+
+        fun incrementPlayerXScore() = playerXScore++
+
+        fun incrementPlayerOScore() = playerOScore++
+
+        fun resetScores() {
+            playerXScore = 0
+            playerOScore = 0
+        }
+    }
+
+    // Create an instance of Scores
+    private val scores = Scores()
     private val bot: Bot = Bot(boardModel, gameView)
 
     init {
         boardModel.bot = bot
-        gameView.createWelcomeScreen(::handleStartGame, ::handleDifficultySelection) // Pass the start game handler to createWelcomeScreen
+        gameView.createWelcomeScreen(::handleStartGame, ::handleDifficultySelection, scores)
     }
 
     private fun handleStartGame() {
@@ -53,11 +72,14 @@ class GameController(private val boardModel: BoardModel, private val gameView: G
         // Disable further moves and show win message
         disableCells()
 
-        val message = if (winner == Player.NONE) "It's a draw!" else "Player ${winner.symbol} wins!"
-        gameView.createFarewellScreen(message, ::resetGame)
+        val message = if (winner == Player.NONE) {
+            "It's a draw!"
+        } else {
+            if (winner == Player.X) scores.incrementPlayerXScore() else scores.incrementPlayerOScore()
+            "Player ${winner.symbol} wins!"
+        }
 
-        // Add event handler to the farewell screen to restart the game
-        //resetGame()
+        gameView.createFarewellScreen(message, ::resetGame)
     }
 
     private fun resetGame() {
@@ -66,7 +88,7 @@ class GameController(private val boardModel: BoardModel, private val gameView: G
 
         // Clear the board view and enable cells
         gameView.resetBoard()
-        gameView.createWelcomeScreen(::handleStartGame, ::handleDifficultySelection)
+        gameView.createWelcomeScreen(::handleStartGame, ::handleDifficultySelection, scores)
     }
 
     private fun disableCells() {
