@@ -1,6 +1,6 @@
 package com.example.tictactoe.view
 
-import com.example.tictactoe.controller.GameController
+import com.example.tictactoe.model.Scores
 import javafx.animation.KeyFrame
 import javafx.animation.KeyValue
 import javafx.animation.Timeline
@@ -85,7 +85,7 @@ class GameView {
         return boardPane.children[row * 3 + col] as StackPane
     }
 
-    fun createWelcomeScreen(startGameHandler: () -> Unit, difficultySelectionHandler: (String) -> Unit, scores: GameController.Scores) {
+    fun createWelcomeScreen(startGameHandler: () -> Unit, difficultySelectionHandler: (String) -> Unit, scores: Scores) {
         val welcomePane = VBox(80.0) // Create a VBox with spacing
 
         val playerXLabel = Label("Player X Wins: ${scores.playerXWins}")

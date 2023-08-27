@@ -4,33 +4,56 @@ import com.example.tictactoe.bot.Bot
 import com.example.tictactoe.bot.Bot.Difficulty
 import com.example.tictactoe.model.BoardModel
 import com.example.tictactoe.model.Player
+import com.example.tictactoe.model.Scores
 import com.example.tictactoe.view.GameView
+import com.google.gson.Gson
+import java.io.File
 
 class GameController(private val boardModel: BoardModel, private val gameView: GameView) {
-    data class Scores(private var playerXScore: Int = 0, private var playerOScore: Int = 0) {
-        val playerXWins: Int
-            get() = playerXScore
 
-        val playerOWins: Int
-            get() = playerOScore
-
-        fun incrementPlayerXScore() = playerXScore++
-
-        fun incrementPlayerOScore() = playerOScore++
-
-        fun resetScores() {
-            playerXScore = 0
-            playerOScore = 0
-        }
-    }
+    private val fs = File.separator
+    private val scoresFilePath = File(".").canonicalPath +
+            "${fs}src${fs}main${fs}kotlin${fs}com${fs}example${fs}tictactoe${fs}model${fs}scores.json"
 
     // Create an instance of Scores
-    private val scores = Scores()
+    private val scores = loadScores()
     private val bot: Bot = Bot(boardModel, gameView)
 
     init {
+        // Add a shutdown hook to save scores on exit
+        Runtime.getRuntime().addShutdownHook(Thread {
+            // Save scores when the application exits
+            saveScores(scores)
+        })
+
         boardModel.bot = bot
         gameView.createWelcomeScreen(::handleStartGame, ::handleDifficultySelection, scores)
+    }
+
+    private fun saveScores(scores: Scores) {
+        val gson = Gson()
+        val json = gson.toJson(scores)
+        val file = File(scoresFilePath)
+        file.createNewFile()
+        file.writeText(json)
+    }
+
+    private fun loadScores(): Scores {
+        val gson = Gson()
+        val scoresFile = File(scoresFilePath)
+
+        return if (scoresFile.exists()) {
+            val json = scoresFile.readText()
+            gson.fromJson(json, Scores::class.java)
+        } else {
+            // Initialize with default values
+            val defaultScores = Scores(0, 0)
+
+            // Save the default scores to the scores file
+            saveScores(defaultScores)
+
+            defaultScores
+        }
     }
 
     private fun handleStartGame() {
