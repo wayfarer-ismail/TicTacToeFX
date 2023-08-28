@@ -103,6 +103,16 @@ class GameView {
             startGameHandler.invoke()
         }
 
+        // Create a "Reset Scores" button
+        val resetScoresButton = Button("Reset Scores")
+        applyTheme(resetScoresButton)
+        resetScoresButton.setOnAction {
+            scores.resetScores()
+            playerXLabel.text = "Player X Wins: ${scores.playerXWins}"
+            playerOLabel.text = "Player O Wins: ${scores.playerOWins}"
+            //resetScoresHandler.invoke()
+        }
+
         val difficultyComboBox = ComboBox<String>()
         difficultyComboBox.items.addAll("Easy", "Medium", "Hard", "Challenging")
         difficultyComboBox.selectionModel.selectFirst()
@@ -120,7 +130,7 @@ class GameView {
         optionsBox.children.addAll(difficultyComboBox, selectButton)
 
         welcomePane.alignment = Pos.CENTER // Align elements in the center
-        welcomePane.children.addAll(optionsBox, startButton, scoresBox)
+        welcomePane.children.addAll(optionsBox, startButton, scoresBox, resetScoresButton)
 
         root.children.add(welcomePane)
     }
@@ -175,7 +185,7 @@ class GameView {
 
     private fun playWinAnimation(root: StackPane) {
         val pane = StackPane()
-        pane.style = "-fx-background-color: #0ff7f0; -fx-padding: 20px;"
+        pane.style = "-fx-background-color: #7300ab; -fx-padding: 20px;"
         pane.opacity = 0.0 // Start with zero opacity
 
         val timeline = Timeline()
@@ -184,7 +194,7 @@ class GameView {
             KeyValue(pane.opacityProperty(), 0.25)
         )
         val fadeOut = KeyFrame(
-            Duration.seconds(3.0),
+            Duration.seconds(2.0),
             KeyValue(pane.opacityProperty(), 0.0)
         )
         timeline.keyFrames.addAll(fadeIn, fadeOut)
