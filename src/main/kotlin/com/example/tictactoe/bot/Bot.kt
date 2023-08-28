@@ -22,7 +22,6 @@ class Bot(private val boardModel: BoardModel, private val gameView: GameView) {
     }
 
     fun makeMove() {
-        println("making move")
         val emptyCells = mutableListOf<Pair<Int, Int>>()
 
         for (row in 0 until boardModel.boardSize) {
@@ -42,7 +41,6 @@ class Bot(private val boardModel: BoardModel, private val gameView: GameView) {
     }
 
     private fun placeOnCell(row: Int, col: Int) {
-        println("placing on cell $row, $col")
         gameView.getCell(row, col).fireEvent(
             MouseEvent(MouseEvent.MOUSE_CLICKED,
                 0.0, 0.0, 0.0, 0.0, MouseButton.PRIMARY, 1, false,
@@ -78,7 +76,6 @@ class Bot(private val boardModel: BoardModel, private val gameView: GameView) {
 
     private fun hardMove(emptyCells: List<Pair<Int, Int>>) {
         val bestMove = minimax(boardModel, Player.O, emptyCells, 0)
-        println("best move: ${bestMove.second} with score ${bestMove.first}")
         val (row, col) = bestMove.second
         if (row == -1 || col == -1)
             easyMove(emptyCells.toMutableList())

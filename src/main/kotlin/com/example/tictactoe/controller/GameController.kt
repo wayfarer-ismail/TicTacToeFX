@@ -14,6 +14,7 @@ class GameController(private val boardModel: BoardModel, private val gameView: G
     private val fs = File.separator
     private val scoresFilePath = File(".").canonicalPath +
             "${fs}src${fs}main${fs}kotlin${fs}com${fs}example${fs}tictactoe${fs}model${fs}scores.json"
+    private val alternativeScoresFilePath = File(".").canonicalPath + "${fs}scores.json"
 
     // Create an instance of Scores
     private val scores = loadScores()
@@ -33,14 +34,14 @@ class GameController(private val boardModel: BoardModel, private val gameView: G
     private fun saveScores(scores: Scores) {
         val gson = Gson()
         val json = gson.toJson(scores)
-        val file = File(scoresFilePath)
+        val file = if (File(scoresFilePath).exists()) File(scoresFilePath) else File(alternativeScoresFilePath)
         file.createNewFile()
         file.writeText(json)
     }
 
     private fun loadScores(): Scores {
         val gson = Gson()
-        val scoresFile = File(scoresFilePath)
+        val scoresFile = if (File(scoresFilePath).exists()) File(scoresFilePath) else File(alternativeScoresFilePath)
 
         return if (scoresFile.exists()) {
             val json = scoresFile.readText()
