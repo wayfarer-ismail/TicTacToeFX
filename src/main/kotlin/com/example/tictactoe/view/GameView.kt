@@ -25,14 +25,7 @@ class GameView {
     val boardPane: GridPane = GridPane()
 
     init {
-        root.alignment = Pos.CENTER
-        root.minWidth = 500.0
-        root.minHeight = 500.0
-
-        boardPane.alignment = Pos.CENTER
-
         val backgroundImage = Image("https://i.ibb.co/VH8970J/tictactoe-background-1.png")
-
         val background = Background(
             BackgroundImage(
                 backgroundImage,
@@ -40,16 +33,16 @@ class GameView {
                 BackgroundRepeat.NO_REPEAT,
                 null,
                 BackgroundSize(
-                    BackgroundSize.AUTO,
-                    BackgroundSize.AUTO,
-                    false,
-                    false,
-                    true,
-                    true
+                    BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true
                 )
             )
         )
 
+        boardPane.alignment = Pos.CENTER
+
+        root.alignment = Pos.CENTER
+        root.minWidth = 500.0
+        root.minHeight = 500.0
         root.background = background
     }
 
@@ -110,7 +103,6 @@ class GameView {
             scores.resetScores()
             playerXLabel.text = "Player X Wins: ${scores.playerXWins}"
             playerOLabel.text = "Player O Wins: ${scores.playerOWins}"
-            //resetScoresHandler.invoke()
         }
 
         val difficultyComboBox = ComboBox<String>()

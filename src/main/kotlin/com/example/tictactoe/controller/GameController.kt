@@ -44,15 +44,13 @@ class GameController(private val boardModel: BoardModel, private val gameView: G
 
         return if (scoresFile.exists()) {
             val json = scoresFile.readText()
-            gson.fromJson(json, Scores::class.java)
+            gson.fromJson(json, Scores::class.java) // Load scores from file
         } else {
             // Initialize with default values
             val defaultScores = Scores(0, 0)
-
-            // Save the default scores to the scores file
             saveScores(defaultScores)
 
-            defaultScores
+            defaultScores   // Return default scores
         }
     }
 
